@@ -13,11 +13,13 @@ app.use(cors({
 
 app.use(express.json());
 
-app.use((req, res, next) => {
-  console.log(`Request received at: ${req.path}`);
-  next();
+app.get('/', (req, res) => {
+  res.send('Hello, world!'); // This will be the response when accessing the root URL
 });
 
+app.get('/test', (req, res) => {
+  res.send('This is a test endpoint.');
+});
 
 // Import and use routes
 const authRoutes = require('./routes/authRoutes');
