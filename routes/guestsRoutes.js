@@ -9,6 +9,11 @@ const {
   deleteGuest,
 } = require('../controllers/guestsController');
 
+// Define your route
+router.get('/', (req, res) => {
+  res.send('Vendors route is working!'); // This will respond when accessing /vendors
+});
+
 router.get('/', getAllGuests); // Route to get all guests
 router.get('/:category', getGuestsByCategory); // Route to get guests by category (NJ or Niki)
 router.post('/', addGuest); // Route to add a new guest

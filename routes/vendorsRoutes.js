@@ -9,6 +9,11 @@ const {
   addPayment,
 } = require('../controllers/vendorsController');
 
+// Define your route
+router.get('/', (req, res) => {
+  res.send('Locations route is working!'); // This will respond when accessing /locations
+});
+
 // Define routes
 router.get('/', getVendors); // GET all vendors
 router.get('/:category/:vendorId', getVendorById); // GET a specific vendor
