@@ -7,7 +7,7 @@ const PORT = 5001;
 // Allow requests from your frontend's URL
 app.use(cors({
   origin: 'https://njuiux-wp.github.io',
-  methods: ['GET', 'POST', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
