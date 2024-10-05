@@ -1,23 +1,29 @@
-{
-  "decorators": [
-    {
-      "id": 1,
-      "name": "niraj",
-      "contact": "9898989898",
-      "totalAmount": 10000,
-      "depositPaid": 5000,
-      "payments": [],
-      "category": "decorators"
-    }
-  ],
-  "caterers": [
-    {
-      "id": 1,
-      "name": "raj",
-      "contact": "9898989898",
-      "totalAmount": 100000,
-      "depositPaid": 200,
-      "payments": []
-    }
-  ]
-}
+[
+  {
+    "id": 1,
+    "name": "niraj",
+    "contactNumber": "8469912312",
+    "totalPayment": "100000",
+    "depositPaid": "2000",
+    "depositDate": "2024-10-17",
+    "category": "Caterers"
+  },
+  {
+    "id": 2,
+    "name": "raj",
+    "contactNumber": "6257165321",
+    "totalPayment": "120000",
+    "depositPaid": "22",
+    "depositDate": "2024-10-31",
+    "category": "Decorators"
+  },
+  {
+    "id": 3,
+    "name": "niki",
+    "contactNumber": "1231212",
+    "totalPayment": "111",
+    "depositPaid": "11",
+    "depositDate": "2024-10-15",
+    "category": "Location Owner"
+  }
+]

@@ -11,6 +11,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+// app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -33,6 +34,9 @@ app.use('/guests', guestsRoutes);
 
 const locationRoutes = require('./routes/locationRoutes');
 app.use('/locations', locationRoutes);
+
+const todoRoutes = require('./routes/toDoRoutes');
+app.use('/todo', todoRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
