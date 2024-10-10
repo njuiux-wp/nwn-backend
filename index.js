@@ -2,6 +2,14 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const PORT = 5001;
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb+srv://trivedinj1991:LgVbi8fRu1iIdRVI@db-nj-weds-niki.ikdic.mongodb.net/?retryWrites=true&w=majority&appName=db-nj-weds-niki', {
+  dbName: 'db_nwn',  // Specify db_nwn here
+})
+  .then(() => console.log(`Connected to database: ${mongoose.connection.db.databaseName}`))
+  .catch(err => console.error('Failed to connect to MongoDB', err));
+
 
 // Use CORS
 // Allow requests from your frontend's URL

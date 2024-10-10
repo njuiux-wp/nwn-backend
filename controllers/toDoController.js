@@ -1,92 +1,64 @@
-const fs = require('fs');
-const path = require('path');
-
-const dataPath = path.join(__dirname, '../data/todo.json');
+const ToDo = require('../models/toDoModel');
 
 // Get all ToDos
-const getToDos = (req, res) => {
-    fs.readFile(dataPath, 'utf8', (err, data) => {
-        if (err) return res.status(500).json({ error: 'Failed to read data' });
-        res.json(JSON.parse(data));
-    });
-};
-
-// Add a new ToDo
-const addToDo = (req, res) => {
-    const newToDo = { id: Date.now(), ...req.body };
-
-    fs.readFile(dataPath, 'utf8', (err, data) => {
-        if (err) return res.status(500).json({ error: 'Failed to read data' });
-
-        const todos = JSON.parse(data);
-        todos.push(newToDo);
-
-        fs.writeFile(dataPath, JSON.stringify(todos, null, 2), (err) => {
-            if (err) return res.status(500).json({ error: 'Failed to save data' });
-            res.status(201).json(newToDo);
-        });
-    });
-};
-
-// Update a ToDo
-const updateToDo = (req, res) => {
-    const { id } = req.params;
-
-    fs.readFile(dataPath, 'utf8', (err, data) => {
-        if (err) return res.status(500).json({ error: 'Failed to read data' });
-
-        let todos = JSON.parse(data);
-        const index = todos.findIndex(todo => todo.id == id);
-
-        if (index === -1) return res.status(404).json({ error: 'ToDo not found' });
-
-        todos[index] = { ...todos[index], ...req.body };
-
-        fs.writeFile(dataPath, JSON.stringify(todos, null, 2), (err) => {
-            if (err) return res.status(500).json({ error: 'Failed to save data' });
-            res.json(todos[index]);
-        });
-    });
-};
-
-// Delete a ToDo
-const deleteToDo = (req, res) => {
-    const { id } = req.params;
-
-    fs.readFile(dataPath, 'utf8', (err, data) => {
-        if (err) return res.status(500).json({ error: 'Failed to read data' });
-
-        let todos = JSON.parse(data);
-        todos = todos.filter(todo => todo.id != id);
-
-        fs.writeFile(dataPath, JSON.stringify(todos, null, 2), (err) => {
-            if (err) return res.status(500).json({ error: 'Failed to save data' });
-            res.status(204).send();
-        });
-    });
+exports.getToDos = async (req, res) => {
+    try {
+        const todos = await ToDo.find();
+        res.json(todos);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 };
 
 // Get a single ToDo by ID
-const getToDo = (req, res) => {
-    const { id } = req.params;
-    
-    fs.readFile(dataPath, 'utf8', (err, data) => {
-        if (err) return res.status(500).json({ error: 'Failed to read data' });
-
-        const todos = JSON.parse(data);
-        const todo = todos.find(todo => todo.id == id);
-        
-        if (!todo) return res.status(404).json({ error: 'ToDo not found' });
-        
-        res.json(todo);
-    });
+exports.getToDo = async (req, res) => {
+    try {
+        const todo = await ToDo.findById(req.params.id);
+        if (todo) {
+            res.json(todo);
+        } else {
+            res.status(404).json({ message: 'ToDo not found' });
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 };
 
+// Add a new ToDo
+exports.addToDo = async (req, res) => {
+    const todo = new ToDo(req.body);
+    try {
+        const newToDo = await todo.save();
+        res.status(201).json(newToDo);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
 
-module.exports = {
-    getToDos,
-    addToDo,
-    updateToDo,
-    deleteToDo,
-    getToDo
+// Update a ToDo
+exports.updateToDo = async (req, res) => {
+    try {
+        const updatedToDo = await ToDo.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (updatedToDo) {
+            res.json(updatedToDo);
+        } else {
+            res.status(404).json({ message: 'ToDo not found' });
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+// Delete a ToDo
+exports.deleteToDo = async (req, res) => {
+    try {
+        const todo = await ToDo.findByIdAndDelete(req.params.id);
+        if (todo) {
+            res.status(204).send();
+        } else {
+            res.status(404).json({ message: 'ToDo not found' });
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 };
