@@ -1,71 +1,71 @@
-// guestsController.js
-const guestList = require('../data/guests'); // Import the guestList
+const Guest = require('../models/guestsModel');
 
 // Get all guests
-const getAllGuests = (req, res) => {
-  res.json(guestList);
+exports.getAllGuests = async (req, res) => {
+  try {
+    const guests = await Guest.find();
+    res.json(guests);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
-// Get guests by category (NJ or Niki)
-const getGuestsByCategory = (req, res) => {
-  const category = req.params.category;
-  const guests = guestList[category];
+// Get guest by ID
+exports.getGuestById = async (req, res) => {
+  const { id } = req.params; // Get the ID from the request parameters
+  try {
+    const guest = await Guest.findById(id); // Fetch guest by ID
+    if (!guest) {
+      return res.status(404).json({ message: 'Guest not found' }); // Return 404 if not found
+    }
+    res.json(guest); // Return the guest details
+  } catch (error) {
+    res.status(500).json({ message: error.message }); // Handle errors
+  }
+};
 
-  if (guests) {
+// Get guests by category
+exports.getGuestsByCategory = async (req, res) => {
+  const { category } = req.params;
+  try {
+    const guests = await Guest.find({ category });
     res.json(guests);
-  } else {
-    res.status(404).json({ message: "Category not found" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
 // Add a new guest
-const addGuest = (req, res) => {
-  const { category, name, familyMembers } = req.body;
+exports.addGuest = async (req, res) => {
+  const { name, familyMembers, roomNo, inviteStatus, category, locationName } = req.body;
+  const newGuest = new Guest({ name, familyMembers, roomNo, inviteStatus, category, locationName });
 
-  if (!guestList[category]) {
-    return res.status(404).json({ message: "Category not found" });
-  }
-
-  const newId = guestList[category].length ? Math.max(guestList[category].map(g => g.id)) + 1 : 1;
-  const newGuest = { id: newId, name, familyMembers };
-  
-  guestList[category].push(newGuest);
-  res.status(201).json(newGuest);
-};
-
-// Update an existing guest
-const updateGuest = (req, res) => {
-  const { category, id } = req.params;
-  const guest = guestList[category]?.find(g => g.id === parseInt(id));
-
-  if (guest) {
-    const { name, familyMembers } = req.body;
-    guest.name = name !== undefined ? name : guest.name;
-    guest.familyMembers = familyMembers !== undefined ? familyMembers : guest.familyMembers;
-
-    res.json(guest);
-  } else {
-    res.status(404).json({ message: "Guest not found" });
+  try {
+    const savedGuest = await newGuest.save();
+    res.status(201).json(savedGuest);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 };
 
-// Delete a guest
-const deleteGuest = (req, res) => {
-  const { category, id } = req.params;
-  const guestIndex = guestList[category]?.findIndex(g => g.id === parseInt(id));
-
-  if (guestIndex !== undefined && guestIndex >= 0) {
-    guestList[category].splice(guestIndex, 1);
-    res.status(204).send(); // No content
-  } else {
-    res.status(404).json({ message: "Guest not found" });
+// Update a guest
+exports.updateGuest = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const updatedGuest = await Guest.findByIdAndUpdate(id, req.body, { new: true });
+    res.json(updatedGuest);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 };
 
-module.exports = {
-  getAllGuests,
-  getGuestsByCategory,
-  addGuest,
-  updateGuest,
-  deleteGuest,
+// Remove a guest
+exports.deleteGuest = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await Guest.findByIdAndDelete(id);
+    res.json({ message: 'Guest removed successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
