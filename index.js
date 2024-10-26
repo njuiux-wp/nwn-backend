@@ -46,6 +46,9 @@ app.use('/locations', locationRoutes);
 const todoRoutes = require('./routes/toDoRoutes');
 app.use('/todo', todoRoutes);
 
+const eventRoutes = require('./routes/eventRoutes');
+app.use('/events', eventRoutes);
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

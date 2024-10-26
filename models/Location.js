@@ -3,8 +3,10 @@ const mongoose = require('mongoose');
 const locationSchema = new mongoose.Schema({
     name: String,
     fromDate: Date,
-    perDayPrice: Number,
-    depositPaid: Number,
+    totalRooms: Number,
+    totalHalls: Number,
+    perDayRoomPrice: Number,
+    perDayHallPrice: Number,
     options: {
         chairs: Boolean,
         beds: Boolean,
