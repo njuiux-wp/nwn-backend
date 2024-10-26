@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const locationSchema = new mongoose.Schema({
     name: String,
-    fromDate: Date,
+    totalAmount: Number,
     totalRooms: Number,
     totalHalls: Number,
     perDayRoomPrice: Number,
